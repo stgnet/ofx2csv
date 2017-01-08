@@ -1,0 +1,29 @@
+#!/usr/bin/python
+
+import sys
+import xmltodict
+
+with open(sys.argv[1], 'r') as file:
+    while file.readline().rstrip('\n\r'):
+        pass
+
+    xml = xmltodict.parse(file.read())
+
+# OrderedDict([(u'TRNTYPE', u'DEBIT'), (u'DTPOSTED', u'20161228120000.000'), (u'DTUSER', u'20161228120000.000'), (u'TRNAMT', u'-40.37'), (u'FITID', u'64280_29464'), (u'NAME', u'LOWES #00635* INDIANAPOLIS INUS'), (u'MEMO', u'Withdrawal  @ LOWES #00635* INDIANAPOLIS INUS  Trace #13074218')])
+# OrderedDict([(u'TRNTYPE', u'DEP'), (u'DTPOSTED', u'20161229120000.000'), (u'DTUSER', u'20161229120000.000'), (u'TRNAMT', u'5'), (u'FITID', u'64281_29467'), (u'NAME', u'Mastercard Cash Reward'), (u'MEMO', u'Deposit  @ Mastercard Cash Reward Mastercard Cash Re Rebate MOUS  Trace #10131902')])
+
+headers = []
+entries = []
+
+for trx in xml['OFX']['BANKMSGSRSV1']['STMTTRNRS']['STMTRS']['BANKTRANLIST']['STMTTRN']:
+    for header in trx:
+        if header not in headers:
+            headers.append(header)
+    entries.append(trx)
+
+print ','.join(headers)
+for entry in entries:
+    order = []
+    for header in headers:
+        order.append(entry.get(header, ''))
+    print ','.join(order)
