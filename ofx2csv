@@ -21,7 +21,4 @@ for trx in xml['OFX']['BANKMSGSRSV1']['STMTTRNRS']['STMTRS']['BANKTRANLIST']['ST
 
 print ','.join(headers)
 for entry in entries:
-    order = []
-    for header in headers:
-        order.append(entry.get(header, ''))
-    print ','.join(order)
+    print ','.join(entry.get(h, '') for h in headers)
