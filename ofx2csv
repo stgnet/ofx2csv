@@ -9,16 +9,14 @@ with open(sys.argv[1], 'r') as file:
 
     xml = xmltodict.parse(file.read())
 
-
 headers = []
-entries = []
 
-for trx in xml['OFX']['BANKMSGSRSV1']['STMTTRNRS']['STMTRS']['BANKTRANLIST']['STMTTRN']:
-    for header in trx:
+transactions = xml['OFX']['BANKMSGSRSV1']['STMTTRNRS']['STMTRS']['BANKTRANLIST']['STMTTRN']
+for entry in transactions:
+    for header in entry:
         if header not in headers:
             headers.append(header)
-    entries.append(trx)
 
 print ','.join(headers)
-for entry in entries:
-    print ','.join(entry.get(h, '') for h in headers)
+for trx in transactions:
+    print ','.join(trx.get(h, '') for h in headers)
